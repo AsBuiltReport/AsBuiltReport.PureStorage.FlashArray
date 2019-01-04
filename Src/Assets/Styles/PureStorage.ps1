@@ -25,23 +25,23 @@ TableStyle -Id 'Borderless' -BorderWidth 0
 
 # Pure Storage Cover Page
 BlankLine -Count 11
-Paragraph -Style Title $Report.Name
-if ($Company.FullName) {
-    Paragraph -Style Title2 $Company.FullName
+Paragraph -Style Title $Global:AsBuiltConfig.Report.Name
+if ($Global:AsBuiltConfig.Company.FullName) {
+    Paragraph -Style Title2 $Global:AsBuiltConfig.Company.FullName
     BlankLine -Count 27
     Table -Name 'Cover Page' -List -Style Borderless -Width 0 -Hashtable ([Ordered] @{
-            'Author:'  = $Author
+            'Author:'  = $Global:AsBuiltConfig.Report.Author
             'Date:'    = Get-Date -Format 'dd MMMM yyyy'
-            'Version:' = $Version
+            'Version:' = $Global:AsBuiltConfig.Report.Version
         })
     PageBreak
 }
 else {
     BlankLine -Count 28
     Table -Name 'Cover Page' -List -Style Borderless -Width 0 -Hashtable ([Ordered] @{
-            'Author:'  = $Author
+            'Author:'  = $Global:AsBuiltConfig.Report.Author
             'Date:'    = Get-Date -Format 'dd MMMM yyyy'
-            'Version:' = $Version
+            'Version:' = $Global:AsBuiltConfig.Report.Version
         })
     PageBreak
 }
