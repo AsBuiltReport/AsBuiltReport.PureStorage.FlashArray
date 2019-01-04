@@ -30,7 +30,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     $Script:Array = $Null
     foreach ($FlashArray in $Target){
         Try {
-            $Array = New-PfaArray -EndPoint $FlashArray -Credentials $Credentials -IgnoreCertificateError
+            $Array = New-PfaArray -EndPoint $FlashArray -Credentials $Credential -IgnoreCertificateError
         } Catch {
             Write-Verbose "Unable to connect to the Pure Storage FlashArray $FlashArray"
         }
