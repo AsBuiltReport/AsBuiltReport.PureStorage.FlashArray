@@ -10,8 +10,9 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
         Version:        0.1
         Author:         Matt Allford
         Twitter:        @mattallford
-        Github:         mattallford
+        Github:         https://github.com/mattallford
         Credits:        Iain Brighton (@iainbrighton) - PScribo module
+                        Tim Carman (@tpcarman) - Wrote original report for Pure Storage
 
     .LINK
         https://github.com/AsBuiltReport/
@@ -52,7 +53,6 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
             $script:ArrayVolumes = Get-PfaVolumes -Array $Array
             $Script:ArrayHosts = Get-PfaHosts -Array $Array
             $script:ArrayHostGroups = Get-PfaHostGroups -Array $Array
-            #$script:ArrayVolumeSnapshots = $ArrayVolumes | Get-PfaVolumeSnapshots -Array $Array
             $script:ArrayProtectionGroups = Get-PfaProtectionGroups -Array $Array
             $script:ArrayProtectionGroupSchedules = Get-PfaProtectionGroupSchedules -Array $Array
             $script:ArrayProtectionGroupSnapshots = Get-PfaProtectionGroupSnapshots -Array $Array -Name *
@@ -77,8 +77,6 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                         'Purity Version' = $ArrayAttributes.version
                         'Array ID' = $ArrayAttributes.id
                         'Number of Volumes' = $ArrayVolumes.count
-                        #'Volume Snapshot #' = 
-                        #'Volume Group #' = 
                         'Number of Protection Groups' = $ArrayProtectionGroups.count
                         'Number of Protection Group Snapshots' = $ArrayProtectionGroupSnapshots.count
                         'Number of Hosts' = $ArrayHosts.count
@@ -119,7 +117,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             'Status' = $ArrayController.status
                         }
                     }
-                    $ArrayControllerSummary | Table -Name 'Controller Summary'
+                    $ArrayControllerSummary | Sort-Object -Property Name | Table -Name 'Controller Summary'
                 }#End section Heading2 'Controller Summary'
 
                 Section -Style Heading2 'Disk Summary' {
@@ -133,7 +131,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             'Status' = $ArrayDisk.status
                         }
                     }
-                    $ArrayDiskSummary | Table -Name 'Disk Summary' -ColumnWidths 25, 25, 25, 25
+                    $ArrayDiskSummary | Sort-Object -Property Name | Table -Name 'Disk Summary' -ColumnWidths 25, 25, 25, 25
                 }#End section Heading2 'Disk Summary'
 
                 Section -Style Heading2 'Storage Configuration' {
@@ -171,7 +169,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                         'IQN' = $ArrayHost.iqn
                                     }
                                 }
-                                $ArrayHostConfigration | Table -Name 'Hosts'
+                                $ArrayHostConfigration | Sort-Object -Property 'Host Name', 'Host Group' | Table -Name 'Hosts'
                             } elseif ($ArrayHosts.wwn) {
                                 $ArrayHostConfigration = foreach ($ArrayHost in $ArrayHosts) {
                                     [PSCustomObject] @{
@@ -180,7 +178,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                         'WWN' = ($ArrayHost.wwn -split "(\w{2})" | Where-Object {$_ -ne ""}) -join ":"
                                     }
                                 }
-                                $ArrayHostConfigration | Table -Name 'Hosts'
+                                $ArrayHostConfigration | Sort-Object -Property 'Host Name', 'Host Group' | Table -Name 'Hosts'
                             } else {
                                 $ArrayHostConfigration = foreach ($ArrayHost in $ArrayHosts) {
                                     [PSCustomObject] @{
@@ -188,7 +186,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                         'Host Group' = $ArrayHost.hgroup
                                     }
                                 }
-                                $ArrayHostConfigration | Table -Name 'Hosts'
+                                $ArrayHostConfigration | Sort-Object -Property 'Host Name', 'Host Group' | Table -Name 'Hosts'
                             }
                         }#End Section Heading3 Hosts
                     }#End if ($ArrayHosts)
@@ -203,7 +201,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                     'Hosts' = ($ArrayHostGroup.hosts -join ", ")
                                 }
                             }
-                            $ArrayHostGroupConfiguration | Table -Name "Host Groups" -ColumnWidths 50, 50
+                            $ArrayHostGroupConfiguration | Sort-Object -Property 'Host Group Name' | Table -Name "Host Groups" -ColumnWidths 50, 50
                         }#End Section Heading3 Host Groups
                     }#End if ($ArrayHostGroups)
 
@@ -215,14 +213,13 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                 $ArrayVolumeHostGroupConnection = Get-PfaVolumeHostGroupConnections -Array $array -VolumeName $ArrayVolume.name
                                 [PSCustomObject] @{
                                     'Volume Name' = $ArrayVolume.name
-                                    'Volume Size (GB)' = ($ArrayVolume.Size / 1GB)
-                                    #'Volume Created Date' = $ArrayVolume.Created
+                                    'Volume Size' = "$(($ArrayVolume.Size / 1GB)) GB"
                                     'Volume Serial' = $ArrayVolume.Serial
                                     'LUN' = ($ArrayVolumeHostGroupConnection.lun | Select-Object -Unique)
                                     'Host Group' = ($ArrayVolumeHostGroupConnection.hgroup | Select-Object -Unique)
                                 }
                             }
-                            $ArrayVolumeConfiguration | Table -Name 'Volumes'
+                            $ArrayVolumeConfiguration | Sort-Object -Property 'Volume Name' | Sort-Object "Volume Name" | Table -Name 'Volumes'
                         }#End Section Heading3 Volumes
                     }#End if ($ArrayVolumes)
 
@@ -240,7 +237,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                     'Volumes' = ($ArrayProtectionGroup.volumes -join ", ")
                                 }
                             }
-                            $ArrayProtectionGroupConfiguration | Table -Name 'Protection Groups'
+                            $ArrayProtectionGroupConfiguration | Sort-Object -Property Name | Table -Name 'Protection Groups'
                         }#End Section Heading3 'Protection groups'
                     }#End if ($ArrayProtectionGroups)
 
@@ -260,7 +257,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                     'Replication Blackout Times' = $ArrayProtectionGroupSchedule.replicate_blackout
                                 }
                             }
-                            $ArrayProtectionGroupScheduleConfiguration | Table -Name 'Protection Group Schedule'
+                            $ArrayProtectionGroupScheduleConfiguration | Sort-Object -Property Name | Table -Name 'Protection Group Schedule'
                         }#End Section Heading3 'Protection Group Schedules'
                     }#End if (ArrayProtectionGroupSchedules)
                 }#End Section Heading2 Storage Configuration
@@ -371,7 +368,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                 #'Speed GB' = Convert-Size -ConvertFrom Bytes -ConvertTo GB -value $ArrayNetworkInterfaces.speed -Precision 2
                             }
                         }
-                        $ArrayNetworkConfiguration | Table -Name 'Subnets and Interfaces'
+                        $ArrayNetworkConfiguration | Sort-Object -Property Name | Table -Name 'Subnets and Interfaces'
                     }#End Section Heading3 Subnets and Interfaces
 
                     if ($ArrayPorts.wwn) {
@@ -384,7 +381,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                     'WWN' = ($ArrayPort.wwn -split "(\w{2})" | Where-Object {$_ -ne ""}) -join ":"
                                 }
                             }
-                            $ArrayPortWWNConfiguration | Table -Name 'WWN Target Ports'
+                            $ArrayPortWWNConfiguration | Sort-Object -Property Port | Table -Name 'WWN Target Ports'
                         }#End Section Heading3 WWN Target Ports
                     } Elseif ($Arrayports.iqn) {
                         Section -Style Heading3 'IQN Target Ports' {
@@ -396,7 +393,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                     'IQN' = $ArrayPort.iqn
                                 }
                             }
-                            $ArrayPortIQNConfiguration | Table -Name 'IQN Target Ports'
+                            $ArrayPortIQNConfiguration | Sort-Object -Property Port | Table -Name 'IQN Target Ports'
                         }#End Section Heading3 IQN Target Ports
                     }#End if $Arrayports
 
@@ -427,7 +424,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             }
                             $ArrayDirectoryServiceConfiguration | Table -Name 'Directory Service Configuration' -List
                         }#End Section Directory Service Configuration
-                    }
+                    }#End If ($ArrayDirectoryService)
 
                     if ($ArrayDirectoryServiceGroups) {
                         Section -Style Heading3 'Directory Service Groups' {
@@ -439,8 +436,8 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             }
                             $ArrayDirectoryServiceGroupConfiguration | Table -Name 'Directory Service Groups' -List
                         }
-                    }
-                }#End Section Users
+                    }#End if ($ArrayDirectoryServiceGroups)
+                }#End Section Heading2 Users
             }#End Section Heading1 $ArrayAttributes.array_name
         }#End if $Array
     }#End foreach $FlashArray in $Target
