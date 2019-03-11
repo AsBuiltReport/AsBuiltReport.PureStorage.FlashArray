@@ -1,5 +1,5 @@
 #region Pure Storage Document Style
-DocumentOption -EnableSectionNumbering -PageSize A4 -DefaultFont 'Arial' -MarginLeftAndRight 71 -MarginTopAndBottom 71
+DocumentOption -EnableSectionNumbering -PageSize A4 -DefaultFont 'Arial' -MarginLeftAndRight 71 -MarginTopAndBottom 71 -Orientation $Orientation
 
 Style -Name 'Title' -Size 24 -Color 'F05423' -Align Center
 Style -Name 'Title 2' -Size 18 -Color '2F2F2F' -Align Center
@@ -23,29 +23,34 @@ Style -Name 'OK' -Size 10 -BackgroundColor 'AADB1E'
 TableStyle -Id 'TableDefault' -HeaderStyle 'TableDefaultHeading' -RowStyle 'TableDefaultRow' -AlternateRowStyle 'TableDefaultAltRow' -BorderColor '464547' -Align Left -BorderWidth 0.5 -Default
 TableStyle -Id 'Borderless' -BorderWidth 0
 
-# Pure Storage Cover Page
-BlankLine -Count 11
-Paragraph -Style Title $Global:AsBuiltConfig.Report.Name
-if ($Global:AsBuiltConfig.Company.FullName) {
-    Paragraph -Style Title2 $Global:AsBuiltConfig.Company.FullName
-    BlankLine -Count 27
-    Table -Name 'Cover Page' -List -Style Borderless -Width 0 -Hashtable ([Ordered] @{
-            'Author:'  = $Global:AsBuiltConfig.Report.Author
-            'Date:'    = Get-Date -Format 'dd MMMM yyyy'
-            'Version:' = $Global:AsBuiltConfig.Report.Version
-        })
-    PageBreak
+# Pure Storage Page Layout
+# Set position of report titles and information based on page orientation
+if ($Orientation -eq 'Portrait') {
+    BlankLine -Count 11
+    $LineCount = 30
+} else {
+    BlankLine -Count 7
+    $LineCount = 20
 }
-else {
-    BlankLine -Count 28
-    Table -Name 'Cover Page' -List -Style Borderless -Width 0 -Hashtable ([Ordered] @{
-            'Author:'  = $Global:AsBuiltConfig.Report.Author
-            'Date:'    = Get-Date -Format 'dd MMMM yyyy'
-            'Version:' = $Global:AsBuiltConfig.Report.Version
-        })
-    PageBreak
+
+# Add Report Name
+Paragraph -Style Title $ReportConfig.Report.Name
+
+if ($AsBuiltConfig.Company.FullName) {
+    # Add Company Name if specified
+    Paragraph -Style Title2 $AsBuiltConfig.Company.FullName
+    BlankLine -Count $LineCount
+} else {
+    BlankLink -Count ($LineCount +1)
 }
-# Table of Contents
+Table -Name 'Cover Page' -List -Style Borderless -Width 0 -Hashtable ([Ordered] @{
+        'Author:'  = $AsBuiltConfig.Report.Author
+        'Date:'    = Get-Date -Format 'dd MMMM yyyy'
+        'Version:' = $ReportConfig.Report.Version
+        })
+PageBreak
+
+# Add Table of Contents
 TOC -Name 'Table of Contents'
 PageBreak
 
