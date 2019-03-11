@@ -1,5 +1,3 @@
-#Requires -Modules PScribo, PureStoragePowershellSDK
-
 function Invoke-AsBuiltReport.PureStorage.FlashArray {
     <#
     .SYNOPSIS
@@ -21,14 +19,14 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     #region Script Parameters
     [CmdletBinding()]
     param (
-        $Target,
+        [string[]] $Target,
         [pscredential] $Credential,
-		$StyleName
+		$StylePath
     )
 
     # If custom style not set, use default style
-    if (!$StyleName) {
-        & "$PSScriptRoot\..\Assets\Styles\PureStorage.ps1"
+    if (!$StylePath) {
+        & "$PSScriptRoot\..\..\AsBuiltReport.Purestorage.FlashArray.Style.ps1"
     }
 
     $Script:Array = $Null
