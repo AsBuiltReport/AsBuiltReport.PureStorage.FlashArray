@@ -41,7 +41,7 @@ if ($AsBuiltConfig.Company.FullName) {
     Paragraph -Style Title2 $AsBuiltConfig.Company.FullName
     BlankLine -Count $LineCount
 } else {
-    BlankLink -Count ($LineCount +1)
+    BlankLine -Count ($LineCount +1)
 }
 Table -Name 'Cover Page' -List -Style Borderless -Width 0 -Hashtable ([Ordered] @{
         'Author:'  = $AsBuiltConfig.Report.Author
