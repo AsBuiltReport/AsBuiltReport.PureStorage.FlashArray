@@ -214,7 +214,6 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                     'Volume Name' = $ArrayVolume.name
                                     'Volume Size' = "$(($ArrayVolume.Size / 1GB)) GB"
                                     'Volume Serial' = $ArrayVolume.Serial
-                                    'LUN' = ($ArrayVolumeHostGroupConnection.lun | Select-Object -Unique)
                                     'Host Group' = ($ArrayVolumeHostGroupConnection.hgroup | Select-Object -Unique)
                                 }
                             }
