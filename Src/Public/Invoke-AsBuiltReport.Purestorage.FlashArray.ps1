@@ -5,7 +5,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     .DESCRIPTION
         Documents the configuration of Pure Storage FlashArray in Word/HTML/XML/Text formats using PScribo.
     .NOTES
-        Version:        0.1
+        Version:        0.4/0
         Author:         Matt Allford
         Twitter:        @mattallford
         Github:         https://github.com/mattallford
@@ -13,7 +13,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                         Tim Carman (@tpcarman) - Wrote original report for Pure Storage
 
     .LINK
-        https://github.com/AsBuiltReport/
+        https://github.com/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray
     #>
 
     #region Script Parameters
