@@ -1,21 +1,21 @@
 <p align="center">
-    <a alt="PowerShell Gallery Version">
+    <a href="https://www.powershellgallery.com/packages/AsBuiltReport.PureStorage.FlashArray/" alt="PowerShell Gallery Version">
         <img src="https://img.shields.io/powershellgallery/v/AsBuiltReport.PureStorage.FlashArray.svg" /></a>
-    <a alt="PS Gallery Downloads">
+    <a href="https://www.powershellgallery.com/packages/AsBuiltReport.PureStorage.FlashArray/" alt="PS Gallery Downloads">
         <img src="https://img.shields.io/powershellgallery/dt/AsBuiltReport.PureStorage.FlashArray.svg" /></a>
-    <a alt="PS Platform">
+    <a href="https://www.powershellgallery.com/packages/AsBuiltReport.PureStorage.FlashArray/" alt="PS Platform">
         <img src="https://img.shields.io/powershellgallery/p/AsBuiltReport.PureStorage.FlashArray.svg" /></a>
 </p>
 <p align="center">
-    <a alt="GitHub Last Commit">
+    <a href="https://github.com/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray/graphs/commit-activity" alt="GitHub Last Commit">
         <img src="https://img.shields.io/github/last-commit/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray/master.svg" /></a>
-    <a alt="GitHub License">
+    <a href="https://raw.githubusercontent.com/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray/master/LICENSE" alt="GitHub License">
         <img src="https://img.shields.io/github/license/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray.svg" /></a>
-    <a alt="GitHub Contributors">
+    <a href="https://github.com/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray/graphs/contributors" alt="GitHub Contributors">
         <img src="https://img.shields.io/github/contributors/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray.svg"/></a>
 </p>
 <p align="center">
-    <a alt="Twitter">
+    <a href="https://twitter.com/AsBuiltReport" alt="Twitter">
             <img src="https://img.shields.io/twitter/follow/AsBuiltReport.svg?style=social"/></a>
 </p>
 
