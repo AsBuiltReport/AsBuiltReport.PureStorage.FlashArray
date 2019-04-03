@@ -1,3 +1,24 @@
+<p align="center">
+    <a alt="PowerShell Gallery Version">
+        <img src="https://img.shields.io/powershellgallery/v/AsBuiltReport.PureStorage.FlashArray.svg" /></a>
+    <a alt="PS Gallery Downloads">
+        <img src="https://img.shields.io/powershellgallery/dt/AsBuiltReport.PureStorage.FlashArray.svg" /></a>
+    <a alt="PS Platform">
+        <img src="https://img.shields.io/powershellgallery/p/AsBuiltReport.PureStorage.FlashArray.svg" /></a>
+</p>
+<p align="center">
+    <a alt="GitHub Last Commit">
+        <img src="https://img.shields.io/github/last-commit/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray/master.svg" /></a>
+    <a alt="GitHub License">
+        <img src="https://img.shields.io/github/license/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray.svg" /></a>
+    <a alt="GitHub Contributors">
+        <img src="https://img.shields.io/github/contributors/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray.svg"/></a>
+</p>
+<p align="center">
+    <a alt="Twitter">
+            <img src="https://img.shields.io/twitter/follow/AsBuiltReport.svg?style=social"/></a>
+</p>
+
 # Pure Storage FlashArray AsBuiltReport
 
 Pure Storage FlashArray AsBuiltReport is a module of the parent "AsBuiltReport" project (https://github.com/AsBuiltReport/AsBuiltReport). AsBuiltReport is a PowerShell module which generates As-Built documentation for many common datacentre infrastructure systems. Reports can be generated in Text, XML, HTML and MS Word formats and can be presented with custom styling to align with your company/customer's brand.
@@ -53,9 +74,9 @@ The following provides information of how to configure each schema within the re
 ## Examples
 There is one example listed below on running the AsBuiltReport script against a Pure Storage FlashArray target. Refer to the `README.md` file in the main AsBuiltReport project repository for more examples.
 
-- The following creates a Pure Storage FlashArray As-Built report in HTML & Word formats.
+- The following creates a Pure Storage FlashArray As-Built report in HTML & Word formats in the folder C:\scripts\.
 ```powershell
-PS C:\>New-AsBuiltReport -Report PureStorage.FlashArray -Target 192.168.1.100 -Credential (Get-Credential) -Format HTML,Word
+PS C:\>New-AsBuiltReport -Report PureStorage.FlashArray -Target 192.168.1.100 -Credential (Get-Credential) -Format HTML,Word -OutputPath C:\scripts\
 ```
 
 ## Knwon Issues
