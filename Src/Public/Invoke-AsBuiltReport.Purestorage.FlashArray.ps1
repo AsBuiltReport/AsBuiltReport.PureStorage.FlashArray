@@ -5,7 +5,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     .DESCRIPTION
         Documents the configuration of Pure Storage FlashArray in Word/HTML/XML/Text formats using PScribo.
     .NOTES
-        Version:        0.4/0
+        Version:        0.4.1
         Author:         Matt Allford
         Twitter:        @mattallford
         Github:         https://github.com/mattallford
@@ -30,11 +30,12 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     }
 
     $Script:Array = $Null
+    #Connect to Pure Storage Array using supplied credentials
     foreach ($FlashArray in $Target) {
         Try {
-            $Array = New-PfaArray -EndPoint $FlashArray -Credentials $Credential -IgnoreCertificateError
+            $Array = New-PfaArray -EndPoint $FlashArray -Credentials $Credential -IgnoreCertificateError -ErrorAction Stop
         } Catch {
-            Write-Verbose "Unable to connect to the Pure Storage FlashArray $FlashArray"
+            Write-Error $_
         }
 
         if ($Array) {
@@ -438,5 +439,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                 }#End Section Heading2 Users
             }#End Section Heading1 $ArrayAttributes.array_name
         }#End if $Array
+        #Clear the $Array variable ready for reuse for a connection attempt on the next foreach loop
+        Clear-Variable -Name Array
     }#End foreach $FlashArray in $Target
 }#End Function Invoke-AsBuiltReport.PureStorage.FlashArray
