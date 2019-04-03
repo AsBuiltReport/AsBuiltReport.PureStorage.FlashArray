@@ -15,7 +15,7 @@
         <img src="https://img.shields.io/github/contributors/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray.svg"/></a>
 </p>
 <p align="center">
-    <a href="https://twitter.com/AsBuiltReport" target="_blank" alt="Twitter">
+    <a href="https://twitter.com/AsBuiltReport" alt="Twitter">
             <img src="https://img.shields.io/twitter/follow/AsBuiltReport.svg?style=social"/></a>
 </p>
 
