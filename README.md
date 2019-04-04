@@ -21,7 +21,7 @@
 
 # Pure Storage FlashArray AsBuiltReport
 
-Pure Storage FlashArray AsBuiltReport is a module of the parent "AsBuiltReport" project (https://github.com/AsBuiltReport/AsBuiltReport). AsBuiltReport is a PowerShell module which generates As-Built documentation for many common datacentre infrastructure systems. Reports can be generated in Text, XML, HTML and MS Word formats and can be presented with custom styling to align with your company/customer's brand.
+Pure Storage FlashArray AsBuiltReport is a module of the parent "AsBuiltReport" [project](https://github.com/AsBuiltReport/AsBuiltReport). AsBuiltReport is a PowerShell module which generates As-Built documentation for many common datacentre infrastructure systems. Reports can be generated in Text, XML, HTML and MS Word formats and can be presented with custom styling to align with your company/customer's brand.
 
 For detailed documentation around the whole project, please refer to the `README.md` file in the parent AsBuiltReport repository (linked to above). This README is specific only to the PureStorage Flasharray repository.
 
@@ -38,15 +38,15 @@ The following PowerShell modules are required for generating a Pure Storage Flas
 
 Each of these modules can be easily downloaded and installed via the PowerShell Gallery 
 
-- [AsBuiltReport Module](https://www.powershellgallery.com/packages/AsBuiltReport/)
 - [Pure Storage Powershell SDK Module](https://www.powershellgallery.com/packages/PureStoragePowerShellSDK/)
+- [AsBuiltReport Module](https://www.powershellgallery.com/packages/AsBuiltReport/)
 
 ### Module Installation
 
 Open a Windows PowerShell terminal window and install each of the required modules as follows;
 ```powershell
-Install-Module AsBuiltReport
 Install-Module PureStoragePowerShellSDK
+Install-Module AsBuiltReport
 ```
 
 ### Required Privileges
@@ -79,4 +79,4 @@ There is one example listed below on running the AsBuiltReport script against a 
 PS C:\>New-AsBuiltReport -Report PureStorage.FlashArray -Target 192.168.1.100 -Credential (Get-Credential) -Format HTML,Word -OutputPath C:\scripts\
 ```
 
-## Knwon Issues
+## Known Issues
