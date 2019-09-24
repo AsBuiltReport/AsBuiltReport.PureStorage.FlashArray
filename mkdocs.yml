@@ -1,0 +1,12 @@
+site_name: AsBuiltReport.PureStorage.FlashArray
+repo_url: https://github.com/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray
+theme: readthedocs
+edit_uri: edit/master/docs/
+pages:
+- Home: index.md
+- AsBuiltReport.PureStorage.FlashArray Basics:
+  - What is AsBuiltReport.PureStorage.FlashArray: about.md
+  - Quick Start: Quick-Start-Installation-and-Example.md
+- Basic Commands:
+- Examples:
+- Acknowledgements: acknowledgements.md
