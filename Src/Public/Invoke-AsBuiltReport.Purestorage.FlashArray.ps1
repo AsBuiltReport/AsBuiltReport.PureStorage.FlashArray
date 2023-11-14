@@ -5,12 +5,13 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     .DESCRIPTION
         Documents the configuration of Pure Storage FlashArray in Word/HTML/XML/Text formats using PScribo.
     .NOTES
-        Version:        0.4.1
+        Version:        0.4.2
         Author:         Matt Allford
         Twitter:        @mattallford
         Github:         https://github.com/mattallford
         Credits:        Iain Brighton (@iainbrighton) - PScribo module
                         Tim Carman (@tpcarman) - Wrote original report for Pure Storage
+			Matt Allford (@mattallford) - last updated pure flashary
 
     .LINK
         https://github.com/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray
@@ -33,49 +34,49 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     #Connect to Pure Storage Array using supplied credentials
     foreach ($FlashArray in $Target) {
         Try {
-            $Array = New-PfaArray -EndPoint $FlashArray -Credentials $Credential -IgnoreCertificateError -ErrorAction Stop
+            $Array = Connect-Pfa2Array -EndPoint $FlashArray -Credential $Credential -IgnoreCertificateError -ErrorAction Stop
         } Catch {
             Write-Error $_
         }
 
         if ($Array) {
-            $script:ArrayAttributes = Get-PfaArrayAttributes -Array $Array
-            $script:ArrayRemoteAssistSession = Get-PfaRemoteAssistSession -Array $array
-            $script:ArrayPhoneHomeStatus = Get-PfaPhoneHomeStatus -Array $array
-            $script:ArrayControllers = Get-PfaControllers -Array $Array
-            $script:ArrayAlerts = Get-PfaAlerts -Array $Array
-            $script:ArrayRelayHost = Get-PfaRelayHost -Array $Array
-            $script:ArraySenderDomain = Get-PfaSenderDomain -Array $Array
-            $script:ArraySNMPManagers = Get-PfaSnmpManagers -Array $Array
-            $script:ArraySSLCertificate = Get-PfaCurrentCertificateAttributes -Array $Array
-            $script:ArraySyslogServers = Get-PfaSyslogServers -Array $Array
-            $script:ArrayNTPServers = Get-PfaNtpServers -Array $Array
-            $script:ArrayVolumes = Get-PfaVolumes -Array $Array
-            $Script:ArrayHosts = Get-PfaHosts -Array $Array
-            $script:ArrayHostGroups = Get-PfaHostGroups -Array $Array
-            $script:ArrayProtectionGroups = Get-PfaProtectionGroups -Array $Array
-            $script:ArrayProtectionGroupSchedules = Get-PfaProtectionGroupSchedules -Array $Array
-            $script:ArrayProtectionGroupSnapshots = Get-PfaProtectionGroupSnapshots -Array $Array -Name *
-            $script:ConnectedArrays = Get-PfaArrayConnections -Array $array
-            $script:ArrayProxyServer = Get-PfaProxy -Array $Array
-            $script:ArrayNetworkInterfaces = Get-PfaNetworkInterfaces -Array $Array
-            $script:ArrayPorts = Get-PfaArrayPorts -Array $array
-            $script:ArrayDNS = Get-PfaDnsAttributes -Array $Array
-            $script:ArrayDirectoryService = Get-PfaDirectoryServiceConfiguration -Array $Array
-            $script:ArrayDirectoryServiceGroups = Get-PfaDirectoryServiceGroups -Array $Array
-            $script:ArraySpaceMetrics = Get-PfaArraySpaceMetrics -Array $Array
-            $script:ArrayDisks = Get-PfaAllDriveAttributes -Array $Array
+            $script:ArrayAttributes = Get-Pfa2Array -Array $Array
+            $script:ArrayRemoteAssistSession = Get-Pfa2Support -Array $array
+            $script:ArrayPhoneHomeStatus = Get-Pfa2Support -Array $array
+            $script:ArrayControllers = Get-Pfa2Controller -Array $Array
+            $script:ArrayAlerts = Get-Pfa2Alert -Array $Array
+            $script:ArrayRelayHost = Get-Pfa2SmtpServer -Array $Array
+            $script:ArraySenderDomain = Get-Pfa2SmtpServer -Array $Array
+            $script:ArraySNMPManagers = Get-Pfa2SnmpManager -Array $Array
+            $script:ArraySSLCertificate = Get-Pfa2Certificate -Array $Array
+            $script:ArraySyslogServers = Get-Pfa2SyslogServer -Array $Array
+            $script:ArrayNTPServers = Get-Pfa2ArrayNtpTest -Array $Array
+            $script:ArrayVolumes = Get-Pfa2Volume -Array $Array
+            $Script:ArrayHosts = Get-Pfa2Host -Array $Array
+            $script:ArrayHostGroups = Get-Pfa2HostGroupHost -Array $Array
+            $script:ArrayProtectionGroups = Get-Pfa2ProtectionGroup -Array $Array
+            $script:ArrayProtectionGroupSchedules = Get-Pfa2ProtectionGroup -Array $Array
+            $script:ArrayProtectionGroupSnapshots = Get-Pfa2ProtectionGroupSnapshot -Array $Array -Name *
+            $script:ConnectedArrays = Get-Pfa2ArrayConnection -Array $array
+            $script:ArrayProxyServer = Get-Pfa2Support -Array $Array
+            $script:ArrayNetworkInterfaces = Get-Pfa2NetworkInterface -Array $Array
+            $script:ArrayPorts = Get-Pfa2Port -Array $array
+            $script:ArrayDNS = Get-Pfa2Dns	 -Array $Array
+            $script:ArrayDirectoryService = Get-Pfa2DirectoryService -Array $Array
+            $script:ArrayDirectoryServiceGroups = Get-Pfa2DirectoryServiceRole -Array $Array
+            $script:ArraySpaceMetrics = Get-Pfa2ArraySpace -Array $Array
+            $script:ArrayDisks = Get-Pfa2Drive -Array $Array
 
 
-            Section -Style Heading1 $ArrayAttributes.array_name {
+            Section -Style Heading1 $ArrayAttributes.Name {
                 Section -Style Heading2 'System Summary' {
-                    Paragraph "The following section provides a summary of the array configuration for $($ArrayAttributes.array_name)."
+                    Paragraph "The following section provides a summary of the array configuration for $($ArrayAttributes.Name)."
                     BlankLine
                     #Provide a summary of the Array
                     $ArraySummary = [PSCustomObject] @{
-                        'Array Name' = $ArrayAttributes.array_name
-                        'Purity Version' = $ArrayAttributes.version
-                        'Array ID' = $ArrayAttributes.id
+                        'Array Name' = $ArrayAttributes.Name
+                        'Purity Version' = $ArrayAttributes.Version
+                        'Array ID' = $ArrayAttributes.Id
                         'Number of Volumes' = $ArrayVolumes.count
                         'Number of Protection Groups' = $ArrayProtectionGroups.count
                         'Number of Protection Group Snapshots' = $ArrayProtectionGroupSnapshots.count
@@ -88,25 +89,25 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                 }#End Section Heading2 System Summary
 
                 Section -Style Heading2 'Storage Summary' {
-                    Paragraph "The following section provides a summary of the storage usage on $($ArrayAttributes.array_name)."
+                    Paragraph "The following section provides a summary of the storage usage on $($ArrayAttributes.Name)."
                     BlankLine
                     $ArraySpaceSummary = [PSCustomObject] @{
                         'Capacity' = "$([math]::Round(($ArraySpaceMetrics.capacity) / 1TB, 2)) TB"
-                        'Used' = "$([math]::Round(($ArraySpaceMetrics.total) / 1TB, 2)) TB"
-                        'Free' = "$([math]::Round(($ArraySpaceMetrics.capacity - $ArraySpaceMetrics.total) / 1TB, 2)) TB"
-                        '% Used' = [math]::Truncate(($ArraySpaceMetrics.total / $ArraySpaceMetrics.capacity) * 100)
-                        'Volumes' = "$([math]::Round(($ArraySpaceMetrics.volumes) / 1GB, 2)) GB"
-                        'Snapshots' = "$([math]::Round(($ArraySpaceMetrics.snapshots) / 1GB, 2)) GB"
-                        'Shared Space' = "$([math]::Round(($ArraySpaceMetrics.shared_space) / 1GB, 2)) GB"
-                        'System' = "$([math]::Round(($ArraySpaceMetrics.system) / 1GB, 2)) GB"
-                        'Data Reduction' = [math]::Round(($ArraySpaceMetrics.data_reduction), 2)
-                        'Total Reduction' = [math]::Round(($ArraySpaceMetrics.total_reduction), 2)
+                        'Used' = "$([math]::Round(($ArraySpaceMetrics.space.TotalProvisioned) / 1TB, 2)) TB"
+                        'Free' = "$([math]::Round(($ArraySpaceMetrics.capacity - $ArraySpaceMetrics.space.totalphysical) / 1TB, 2)) TB"
+                        '% Used' = [math]::Truncate(($ArraySpaceMetrics.space.totalphysical / $ArraySpaceMetrics.capacity) * 100)
+                        'Volumes' = "$([math]::Round(($ArraySpaceMetrics.space.TotalProvisioned) / 1GB, 2)) GB"
+                        'Snapshots' = "$([math]::Round(($ArraySpaceMetrics.space.Snapshots) / 1GB, 2)) GB"
+                        'Shared Space' = "$([math]::Round(($ArraySpaceMetrics.space.shared) / 1GB, 2)) GB"
+                        'System' = "$([math]::Round(($ArraySpaceMetrics.space.system) / 1GB, 2)) GB"
+                        'Data Reduction' = [math]::Round(($ArraySpaceMetrics.space.DataReduction), 2)
+                        'Total Reduction' = [math]::Round(($ArraySpaceMetrics.space.totalreduction), 2)
                     }
                     $ArraySpaceSummary | Table -Name 'Storage Summary' -List -ColumnWidths 50, 50
                 }#End Section Heading2 Storage Summary
 
                 Section -Style Heading2 'Controller Summary' {
-                    Paragraph "The following section provides a summary of the controllers in $($ArrayAttributes.array_name)."
+                    Paragraph "The following section provides a summary of the controllers in $($ArrayAttributes.Name)."
                     BlankLine
                     $ArrayControllerSummary = foreach ($ArrayController in $ArrayControllers) {
                         [PSCustomObject] @{
@@ -121,7 +122,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                 }#End section Heading2 'Controller Summary'
 
                 Section -Style Heading2 'Disk Summary' {
-                    Paragraph "The following section provides a summary of the disks in $($ArrayAttributes.array_name)."
+                    Paragraph "The following section provides a summary of the disks in $($ArrayAttributes.Name)."
                     BlankLine
                     $ArrayDiskSummary = foreach ($ArrayDisk in $ArrayDisks) {
                         [PSCustomObject] @{
@@ -135,7 +136,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                 }#End section Heading2 'Disk Summary'
 
                 Section -Style Heading2 'Storage Configuration' {
-                    Paragraph "The following section provides a summary of the Storage Configuration on $($ArrayAttributes.array_name)."
+                    Paragraph "The following section provides a summary of the Storage Configuration on $($ArrayAttributes.Name)."
                     BlankLine
                     if ($ConnectedArrays) {
                         Section -Style Heading3 'Connected Arrays' {
@@ -159,23 +160,23 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArrayHosts) {
                         Section -Style Heading3 'Hosts' {
-                            Paragraph "The following section provides information on the hosts defined on $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the hosts defined on $($ArrayAttributes.Name)."
                             BlankLine
-                            if ($ArrayHosts.iqn) {
+                            if ($ArrayHosts.iqns) {
                                 $ArrayHostConfigration = foreach ($ArrayHost in $ArrayHosts) {
                                     [PSCustomObject] @{
                                         'Host Name' = $ArrayHost.Name
-                                        'Host Group' = $ArrayHost.hgroup
-                                        'IQN' = $ArrayHost.iqn
+                                        'Host Group' = $ArrayHost.HostGroup.name
+                                        'IQN' = $ArrayHost.iqns
                                     }
                                 }
                                 $ArrayHostConfigration | Sort-Object -Property 'Host Name', 'Host Group' | Table -Name 'Hosts'
-                            } elseif ($ArrayHosts.wwn) {
+                            } elseif ($ArrayHosts.wwns) {
                                 $ArrayHostConfigration = foreach ($ArrayHost in $ArrayHosts) {
                                     [PSCustomObject] @{
                                         'Host Name' = $ArrayHost.Name
-                                        'Host Group' = $ArrayHost.hgroup
-                                        'WWN' = ($ArrayHost.wwn -split "(\w{2})" | Where-Object {$_ -ne ""}) -join ":"
+                                        'Host Group' = $ArrayHost.HostGroup.name
+                                        'WWN' = ($ArrayHost.wwns -split "(\w{2})" | Where-Object {$_ -ne ""}) -join ":"
                                     }
                                 }
                                 $ArrayHostConfigration | Sort-Object -Property 'Host Name', 'Host Group' | Table -Name 'Hosts'
@@ -183,7 +184,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                 $ArrayHostConfigration = foreach ($ArrayHost in $ArrayHosts) {
                                     [PSCustomObject] @{
                                         'Host Name' = $ArrayHost.Name
-                                        'Host Group' = $ArrayHost.hgroup
+                                        'Host Group' = $ArrayHost.HostGroup.name
                                     }
                                 }
                                 $ArrayHostConfigration | Sort-Object -Property 'Host Name', 'Host Group' | Table -Name 'Hosts'
@@ -193,12 +194,13 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArrayHostGroups) {
                         Section -Style Heading3 'Host Groups' {
-                            Paragraph "The following section provides information on the host groups on $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the host groups on $($ArrayAttributes.Name)."
                             BlankLine
                             $ArrayHostGroupConfiguration = foreach ($ArrayHostGroup in $ArrayHostGroups) {
                                 [PSCustomObject] @{
-                                    'Host Group Name' = $ArrayHostGroup.name
-                                    'Hosts' = ($ArrayHostGroup.hosts -join ", ")
+                                    'Host Group Name' = $ArrayHostGroup.Group.name
+                                    #need to work this shit out with pure need to match $ArrayHostGroup.Member.name to $ArrayHostGroup.Group.name
+                                    'Hosts' = ($ArrayHostGroup.Member.name -join ", ")
                                 }
                             }
                             $ArrayHostGroupConfiguration | Sort-Object -Property 'Host Group Name' | Table -Name "Host Groups" -ColumnWidths 50, 50
@@ -207,15 +209,16 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArrayVolumes) {
                         Section -Style Heading3 'Volumes' {
-                            Paragraph "The following section provides information on the volumes on $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the volumes on $($ArrayAttributes.Name)."
                             Blankline
                             $ArrayVolumeConfiguration = foreach ($ArrayVolume in $ArrayVolumes) {
-                                $ArrayVolumeHostGroupConnection = Get-PfaVolumeHostGroupConnections -Array $array -VolumeName $ArrayVolume.name
+                                $ArrayVolumeHostGroupConnection = Get-Pfa2Connection -Array $array #-Name $ArrayVolume.name
                                 [PSCustomObject] @{
                                     'Volume Name' = $ArrayVolume.name
-                                    'Volume Size' = "$(($ArrayVolume.Size / 1GB)) GB"
+                                    'Volume Size' = "$(($ArrayVolume.space.TotalProvisioned / 1GB)) GB"
                                     'Volume Serial' = $ArrayVolume.Serial
-                                    'Host Group' = ($ArrayVolumeHostGroupConnection.hgroup | Select-Object -Unique)
+                                    #need to work this shit out with pure need to match $ArrayVolumeHostGroupConnection.volume.name to $ArrayVolume.name
+                                    'Host Group' = ($ArrayVolumeHostGroupConnection.hostgroup.name | Select-Object -Unique)
                                 }
                             }
                             $ArrayVolumeConfiguration | Sort-Object -Property 'Volume Name' | Sort-Object "Volume Name" | Table -Name 'Volumes'
@@ -224,16 +227,18 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArrayProtectionGroups) {
                         Section -Style Heading3 'Protection Groups' {
-                            Paragraph "The following section provides information on the protection groups on $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the protection groups on $($ArrayAttributes.Name)."
                             BlankLine
                             $ArrayProtectionGroupConfiguration = foreach ($ArrayProtectionGroup in $ArrayProtectionGroups) {
+                                $ArrayProtectionGroupvolume = Get-Pfa2ProtectionGroupVolume -Array $array
                                 [PSCustomObject] @{
                                     'Name' = $ArrayProtectionGroup.Name
                                     'Host Group(s)' = $ArrayProtectionGroup.hgroups
-                                    'Source' = $ArrayProtectionGroup.source
+                                    'Source' = $ArrayProtectionGroup.source.name
                                     'Targets' = ($ArrayProtectionGroup.targets).name
                                     'Replication Allowed' = ($ArrayProtectionGroup.targets).allowed
-                                    'Volumes' = ($ArrayProtectionGroup.volumes -join ", ")
+                                    # need to work this shit out with pure need to match $ArrayProtectionGroupvolume.member.name -join ", " to $ArrayProtectionGroup.group
+                                    'Volumes' = ($ArrayProtectionGroupvolume.member.name -join ", ")
                                 }
                             }
                             $ArrayProtectionGroupConfiguration | Sort-Object -Property Name | Table -Name 'Protection Groups'
@@ -242,18 +247,18 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArrayProtectionGroupSchedules) {
                         Section -Style Heading3 'Protection Group Schedules' {
-                            Paragraph "The following section provides information on the protection group snapshot and replication schedules on $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the protection group snapshot and replication schedules on $($ArrayAttributes.Name)."
                             BlankLine
                             $ArrayProtectionGroupScheduleConfiguration = foreach ($ArrayProtectionGroupSchedule in $ArrayProtectionGroupSchedules) {
                                 [PSCustomObject] @{
                                     'Name' = $ArrayProtectionGroupSchedule.name
-                                    'Snapshot Enabled' = $ArrayProtectionGroupSchedule.snap_enabled
-                                    'Snapshot Frequency (Mins)' = ($ArrayProtectionGroupSchedule.snap_frequency / 60)
-                                    'Snapshot At' = $ArrayProtectionGroupSchedule.snap_at
-                                    'Replication Enabled' = $ArrayProtectionGroupSchedule.replicate_enabled
-                                    'Replication Frequency (Mins)' = ($ArrayProtectionGroupSchedule.replicate_frequency / 60)
-                                    'Replicate At' = $ArrayProtectionGroupSchedule.replicate_at
-                                    'Replication Blackout Times' = $ArrayProtectionGroupSchedule.replicate_blackout
+                                    'Snapshot Enabled' = $ArrayProtectionGroupSchedule.snapshotschedule.enabled
+                                    'Snapshot Frequency (Mins)' = ($ArrayProtectionGroupSchedule.sourceretention.AllForSec)
+                                    'Snapshot At' = $ArrayProtectionGroupSchedule.snapshotschedule.at
+                                    'Replication Enabled' = $ArrayProtectionGroupSchedule.ReplicationSchedule.enabled
+                                    'Replication Frequency (Mins)' = ($ArrayProtectionGroupSchedule.ReplicationSchedule.Frequency / 60)
+                                    'Replicate At' = $ArrayProtectionGroupSchedule.ReplicationSchedule.at
+                                    'Replication Blackout Times' = $ArrayProtectionGroupSchedule.ReplicationSchedule.blackout
                                 }
                             }
                             $ArrayProtectionGroupScheduleConfiguration | Sort-Object -Property Name | Table -Name 'Protection Group Schedule'
@@ -262,14 +267,14 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                 }#End Section Heading2 Storage Configuration
 
                 Section -Style Heading2 'System Configuration' {
-                    Paragraph "The following section provides information on the system configuration for $($ArrayAttributes.array_name)."
+                    Paragraph "The following section provides information on the system configuration for $($ArrayAttributes.Name)."
                     if ($ArrayRelayHost -or $ArraySenderDomain -or $ArrayAlerts) {    
                         Section -Style Heading3 'SMTP Configuration' {
-                            Paragraph "The following section provides information on the SMTP configuration for $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the SMTP configuration for $($ArrayAttributes.Name)."
                             Blankline
                             $ArraySMTPConfiguration = [PSCustomObject] @{
                                 'SMTP Server' = $ArrayRelayHost.relayhost
-                                'SMTP Sender Domain' = $ArraySenderDomain.senderdomain
+                                'SMTP Sender Domain' = $ArrayRelayHost.senderdomain
                                 'SMTP Recipients' = ($ArrayAlerts.name -join ", ")
                             }
                             $ArraySMTPConfiguration | Table -Name 'SMTP Configuration' -List -ColumnWidths 50, 50 
@@ -277,7 +282,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                     }
 
                     Section -Style Heading3 'SNMP Configuration' {
-                        Paragraph "The following section provides information on the SNMP configuration for $($ArrayAttributes.array_name)."
+                        Paragraph "The following section provides information on the SNMP configuration for $($ArrayAttributes.Name)."
                         Blankline
                         $ArraySNMPConfiguration = [PSCustomObject] @{
                             'Name' = $ArraySNMPManagers.name
@@ -295,10 +300,10 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArraySyslogServers) {
                         Section -Style Heading3 'Syslog Configuration' {
-                            Paragraph "The following section provides information on the Syslog configuration for $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the Syslog configuration for $($ArrayAttributes.Name)."
                             Blankline
                             $ArraySyslogConfiguration = [PSCustomObject] @{
-                                'Syslog Servers' = ($ArraySyslogServers.syslogserver -join ", ")
+                                'Syslog Servers' = ($ArraySyslogServers.Uri -join ", ")
                             }
                             $ArraySyslogConfiguration | Table -Name 'Syslog Configuration' -List -ColumnWidths 50, 50 
                         }#End Section Heading3 Syslog Configuration
@@ -306,40 +311,40 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArrayNTPServers) {
                         Section -Style Heading3 'NTP Configuration' {
-                            Paragraph "The following section provides information on the NTP configuration for $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the NTP configuration for $($ArrayAttributes.Name)."
                             Blankline
                             $ArrayNTPConfiguration = [PSCustomObject] @{
-                                'NTP Servers' = ($ArrayNTPServers.ntpserver -join ", ")
+                                'NTP Servers' = ($ArrayNTPServers.Destination -join ", ")
                             }
                             $ArrayNTPConfiguration | Table -Name 'NTP Configuration' -List -ColumnWidths 50, 50 
                         }#End Section Heading3 NTP Configuration
                     }
 
                     Section -Style Heading3 'Pure1 Support' {
-                        Paragraph "The following section provides information on the Pure1 Support configuration for $($ArrayAttributes.array_name)."
+                        Paragraph "The following section provides information on the Pure1 Support configuration for $($ArrayAttributes.Name)."
                         Blankline
                         $ArrayPure1Configuration = [PSCustomObject] @{
-                            'Phone Home Status' = $ArrayPhoneHomeStatus.phonehome
-                            'Remote Assist Status' = $ArrayRemoteAssistSession.status
-                            'Proxy Server' = $ArrayProxyServer.proxy
+                            'Phone Home Status' = $ArrayPhoneHomeStatus.PhonehomeEnabled
+                            'Remote Assist Status' = $ArrayRemoteAssistSession.RemoteAssistStatus
+                            'Proxy Server' = $ArrayProxyServer.Proxy
                         }
                         $ArrayPure1Configuration | Table -Name 'Pure1 Configuration' -List -ColumnWidths 50, 50 
                     }#End Section Heading3 Pure1 Configuration
 
                     Section -Style Heading3 'SSL Certificate' {
-                        Paragraph "The following section provides information on the SSL certificate for $($ArrayAttributes.array_name)."
+                        Paragraph "The following section provides information on the SSL certificate for $($ArrayAttributes.Name)."
                         Blankline
                         $ArraySSLCertConfiguration = [PSCustomObject] @{
                             'Status' = $ArraySSLCertificate.status
-                            'Issued To' = $ArraySSLCertificate.issued_to
-                            'Issued By' = $ArraySSLCertificate.issued_by
-                            'Valid from' = $ArraySSLCertificate.valid_from
-                            'Valid To' = $ArraySSLCertificate.valid_to
+                            'Issued To' = $ArraySSLCertificate.issuedto
+                            'Issued By' = $ArraySSLCertificate.issuedby
+                            'Valid from' = $ArraySSLCertificate.validfrom
+                            'Valid To' = $ArraySSLCertificate.validto
                             'Locality' = $ArraySSLCertificate.locality
                             'Country' = $ArraySSLCertificate.country
                             'State' = $ArraySSLCertificate.state
-                            'Key Size' = $ArraySSLCertificate.key_size
-                            'Organisational Unit' = $ArraySSLCertificate.organizational_unit
+                            'Key Size' = $ArraySSLCertificate.keysize
+                            'Organisational Unit' = $ArraySSLCertificate.organizationalunit
                             'Organisation' = $ArraySSLCertificate.organization
                             'Email' = $ArraySSLCertificate.email
                         }
@@ -348,23 +353,24 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                 }#End Section Heading2 System Configuration
 
                 Section -Style Heading2 'Network Configuration' {
-                    Paragraph "The following section provides information on the Network configuration for $($ArrayAttributes.array_name)."
+                    Paragraph "The following section provides information on the Network configuration for $($ArrayAttributes.Name)."
                     Section -Style Heading3 'Subnets and Interfaces' {
-                        Paragraph "The following section provides information on the subnets and interfaces for $($ArrayAttributes.array_name)."
+                        Paragraph "The following section provides information on the subnets and interfaces for $($ArrayAttributes.Name)."
                         Blankline
                         $ArrayNetworkConfiguration = foreach ($ArrayNetworkInterface in $ArrayNetworkInterfaces) {
                             [PSCustomObject] @{
                                 'Name' = $ArrayNetworkInterface.name
                                 'Enabled' = $ArrayNetworkInterface.enabled
-                                'Subnet' = $ArrayNetworkInterface.subnet
-                                'MTU' = $ArrayNetworkInterface.mtu
+                                'Subnet' = $ArrayNetworkInterface.eth.subnet
+                                'MTU' = $ArrayNetworkInterface.eth.mtu
+                                'IP Address' = $ArrayNetworkInterface.eth.address
+                                'Netmask' = $ArrayNetworkInterface.eth.netmask
+                                'Gateway Address' = $ArrayNetworkInterface.eth.gateway
+                                'Hardware Address' = $ArrayNetworkInterface.eth.macaddress
+                                'Interface Type' = $ArrayNetworkInterface.eth.subtype
                                 'Services' = ($ArrayNetworkInterface.services -join ", ")
                                 'Slaves' = ($ArrayNetworkInterface.slaves -join ", ")
-                                'IP Address' = $ArrayNetworkInterface.address
-                                'Netmask' = $ArrayNetworkInterface.netmask
-                                'Gateway Address' = $ArrayNetworkInterface.gateway
-                                'Hardware Address' = $ArrayNetworkInterface.hwaddr
-                                #'Speed GB' = Convert-Size -ConvertFrom Bytes -ConvertTo GB -value $ArrayNetworkInterfaces.speed -Precision 2
+                                'Speed GB' = "$([math]::ceiling(($ArrayNetworkInterface.speed) / 1gb)) GB"
                             }
                         }
                         $ArrayNetworkConfiguration | Sort-Object -Property Name | Table -Name 'Subnets and Interfaces'
@@ -372,7 +378,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArrayPorts.wwn) {
                         Section -Style Heading3 'WWN Target Ports' {
-                            Paragraph "The following section provides information on the WWN ports for $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the WWN ports for $($ArrayAttributes.Name)."
                             Blankline    
                             $ArrayPortWWNConfiguration = foreach ($ArrayPort in $ArrayPorts) { 
                                 [PSCustomObject] @{
@@ -382,9 +388,9 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             }
                             $ArrayPortWWNConfiguration | Sort-Object -Property Port | Table -Name 'WWN Target Ports'
                         }#End Section Heading3 WWN Target Ports
-                    } Elseif ($Arrayports.iqn) {
+                    } if ($Arrayports.iqn) {
                         Section -Style Heading3 'IQN Target Ports' {
-                            Paragraph "The following section provides information on the IQN ports for $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the IQN ports for $($ArrayAttributes.Name)."
                             Blankline    
                             $ArrayPortIQNConfiguration = foreach ($ArrayPort in $ArrayPorts) {
                                 [PSCustomObject] @{
@@ -398,7 +404,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArrayDNS) {
                         Section -Style Heading3 'DNS' {
-                            Paragraph "The following section provides information on the DNS configuration for $($ArrayAttributes.array_name)."
+                            Paragraph "The following section provides information on the DNS configuration for $($ArrayAttributes.Name)."
                             Blankline
                             $ArrayDNSConfiguration = [PSCustomObject] @{
                                 'Domain Name' = $ArrayDNS.domain
@@ -411,15 +417,15 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                 }#End Section Heading2 Network Configuration
 
                 Section -Style Heading2 'Users' {
-                    Paragraph "The following section provides information on the Users configuration for $($ArrayAttributes.array_name)."
+                    Paragraph "The following section provides information on the Users configuration for $($ArrayAttributes.Name)."
                     if ($ArrayDirectoryService) { 
                         Section -Style Heading3 'Directory Service Configuration' {
                             $ArrayDirectoryServiceConfiguration = [PSCustomObject] @{
                                 'Enabled' = $ArrayDirectoryService.Enabled
-                                'URI' = ($ArrayDirectoryService.URI -join ", ")
-                                'Base DN' = $ArrayDirectoryService.base_dn
-                                'Bind User' = $ArrayDirectoryService.Bind_user
-                                'Check Peer' = $ArrayDirectoryService.Check_peer
+                                'URI' = ($ArrayDirectoryService.uris -join ", ")
+                                'Base DN' = $ArrayDirectoryService.basedn
+                                'Bind User' = $ArrayDirectoryService.Binduser
+                                'Check Peer' = $ArrayDirectoryService.Checkpeer
                             }
                             $ArrayDirectoryServiceConfiguration | Table -Name 'Directory Service Configuration' -List
                         }#End Section Directory Service Configuration
@@ -428,16 +434,16 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                     if ($ArrayDirectoryServiceGroups) {
                         Section -Style Heading3 'Directory Service Groups' {
                             $ArrayDirectoryServiceGroupConfiguration = [PSCustomObject] @{
-                                'Group Base' = $ArrayDirectoryServiceGroups.group_base
-                                'Array Admin Group' = $ArrayDirectoryServiceGroups.array_admin_group
-                                'Storage Admin Group' = $ArrayDirectoryServiceGroups.storage_admin_group
-                                'Read Only Group' = $ArrayDirectoryServiceGroups.readonly_group
+                                #'Group Base' = $ArrayDirectoryServiceGroups.groupbase
+                                'Array Groups' = $ArrayDirectoryServiceGroups.group
+                                #'Storage Admin Group' = $ArrayDirectoryServiceGroups.role.name
+                                #'Read Only Group' = $ArrayDirectoryServiceGroups.role.name
                             }
                             $ArrayDirectoryServiceGroupConfiguration | Table -Name 'Directory Service Groups' -List
                         }
                     }#End if ($ArrayDirectoryServiceGroups)
                 }#End Section Heading2 Users
-            }#End Section Heading1 $ArrayAttributes.array_name
+            }#End Section Heading1 $ArrayAttributes.Name
         }#End if $Array
         #Clear the $Array variable ready for reuse for a connection attempt on the next foreach loop
         Clear-Variable -Name Array
