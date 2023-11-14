@@ -61,7 +61,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
             $script:ArrayProxyServer = Get-Pfa2Support -Array $Array
             $script:ArrayNetworkInterfaces = Get-Pfa2NetworkInterface -Array $Array
             $script:ArrayPorts = Get-Pfa2Port -Array $array
-            $script:ArrayDNS = Get-Pfa2Dns	 -Array $Array
+            $script:ArrayDNS = Get-Pfa2Dns -Array $Array
             $script:ArrayDirectoryService = Get-Pfa2DirectoryService -Array $Array
             $script:ArrayDirectoryServiceGroups = Get-Pfa2DirectoryServiceRole -Array $Array
             $script:ArraySpaceMetrics = Get-Pfa2ArraySpace -Array $Array
