@@ -197,12 +197,12 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                         Section -Style Heading3 'Host Groups' {
                             Paragraph "The following section provides information on the host groups on $($ArrayAttributes.Name)."
                             BlankLine
-                            $ArrayHostGroupConfiguration = foreach ($ArrayHostGroup in $ArrayHostGroups) {
+                            $ArrayHostGroupConfiguration = #foreach ($ArrayHostGroup in $ArrayHostGroups) {
                                 [PSCustomObject] @{
-                                    'Host Group' = $ArrayHostGroup.HostGroup.name
+                                    'Host Group' = ($ArrayHostGroup.HostGroup.name | Select-Object -Unique)
                                     'Hosts' = ($ArrayHostGroup.name -join ", ")
                                 }
-                            }
+                            #}
                             $ArrayHostGroupConfiguration | Sort-Object -Property 'Host Group Name' | Table -Name "Host Groups" -ColumnWidths 50, 50
                         }#End Section Heading3 Host Groups
                     }#End if ($ArrayHostGroups)
@@ -467,13 +467,15 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
 
                     if ($ArrayDirectoryServiceGroups) {
                         Section -Style Heading3 'Directory Service Groups' {
-                            $ArrayDirectoryServiceGroupConfiguration = [PSCustomObject] @{
-                                #'Group Base' = $ArrayDirectoryServiceGroups.groupbase
-                                'Array Groups' = $ArrayDirectoryServiceGroups.group
-                                #'Storage Admin Group' = $ArrayDirectoryServiceGroups.role.name
+                            $ArrayDirectoryServiceGroupConfiguration = foreach ($ArrayDirectoryServiceGroup in $ArrayDirectoryServiceGroups) { 
+                                [PSCustomObject] @{
+                                'Group Base' = $ArrayDirectoryServiceGroup.groupbase
+                                'Array Groups' = $ArrayDirectoryServiceGroup.group
+                                'Role' = $ArrayDirectoryServiceGroup.role.name
                                 #'Read Only Group' = $ArrayDirectoryServiceGroups.role.name
+                                }
                             }
-                            $ArrayDirectoryServiceGroupConfiguration | Table -Name 'Directory Service Groups' -List
+                            $ArrayDirectoryServiceGroupConfiguration | Table -Name 'Directory Service Groups'
                         }
                     }#End if ($ArrayDirectoryServiceGroups)
                 }#End Section Heading2 Users
