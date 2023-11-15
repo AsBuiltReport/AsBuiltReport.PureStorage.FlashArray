@@ -55,7 +55,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
             $script:Arrayfiledirectoryexports = Get-Pfa2DirectoryExport -Array $Array
             $script:Arrayfiledirectory = Get-Pfa2Directory -Array $Array
             $Script:ArrayHosts = Get-Pfa2Host -Array $Array
-            $script:ArrayHostGroups = Get-Pfa2Host -Array $Array
+            $script:ArrayHostGroups = Get-Pfa2HostGroup -Array $Array
             $script:ArrayProtectionGroups = Get-Pfa2ProtectionGroup -Array $Array
             $script:ArrayProtectionGroupSchedules = Get-Pfa2ProtectionGroup -Array $Array
             $script:ArrayProtectionGroupSnapshots = Get-Pfa2ProtectionGroupSnapshot -Array $Array -Name *
@@ -86,7 +86,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                         'Number of Host Groups' = $ArrayHostGroups.count
                         'Number of Connected Arrays' = $ConnectedArrays.count
                     }
-                    $ArraySummary | Table -Name 'Array Summary' -List
+                    $ArraySummary | Table -Name 'Array Summary' -List -ColumnWidths 50, 50
                 }#End Section Heading2 System Summary
 
                 Section -Style Heading2 'Storage Summary' {
@@ -197,12 +197,13 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                         Section -Style Heading3 'Host Groups' {
                             Paragraph "The following section provides information on the host groups on $($ArrayAttributes.Name)."
                             BlankLine
-                            $ArrayHostGroupConfiguration = #foreach ($ArrayHostGroup in $ArrayHostGroups) {
+                            $ArrayHostGroupConfiguration = foreach ($ArrayHostGroup in $ArrayHostGroups) {
+                                $ArrayHostGroupConnection = Get-Pfa2Hostgrouphost -Array $array -groupname $ArrayHostGroup.name
                                 [PSCustomObject] @{
-                                    'Host Group' = ($ArrayHostGroup.HostGroup.name | Select-Object -Unique)
-                                    'Hosts' = ($ArrayHostGroup.name -join ", ")
+                                    'Host Group' = $ArrayHostGroup.name
+                                    'Hosts' = ($ArrayHostGroupConnection.member.name -join ", ")
                                 }
-                            #}
+                            }
                             $ArrayHostGroupConfiguration | Sort-Object -Property 'Host Group Name' | Table -Name "Host Groups" -ColumnWidths 50, 50
                         }#End Section Heading3 Host Groups
                     }#End if ($ArrayHostGroups)
@@ -235,9 +236,8 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                     'Name' = $ArrayProtectionGroup.Name
                                     'Host Group(s)' = $ArrayProtectionGroup.hgroups
                                     'Source' = $ArrayProtectionGroup.source.name
-                                    'Targets' = ($ArrayProtectionGroup.targets).name
-                                    'Replication Allowed' = ($ArrayProtectionGroup.targets).allowed
-                                    # need to work this shit out with pure need to match $ArrayProtectionGroupvolume.member.name -join ", " to $ArrayProtectionGroup.group
+                                    'Targets' = $ArrayProtectionGroup.targets.name
+                                    'Replication Allowed' = $ArrayProtectionGroup.targets.allowed
                                     'Volumes' = ($ArrayProtectionGroupvolume.member.name -join ", ")
                                 }
                             }
@@ -382,7 +382,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             'Organisation' = $ArraySSLCertificate.organization
                             'Email' = $ArraySSLCertificate.email
                         }
-                        $ArraySSLCertConfiguration | Table -Name 'SSL Certificate' -List
+                        $ArraySSLCertConfiguration | Table -Name 'SSL Certificate' -List -ColumnWidths 50, 50
                     }#End Section Heading3 SSL Certificate
                 }#End Section Heading2 System Configuration
 
