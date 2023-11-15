@@ -6,12 +6,12 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
         Documents the configuration of Pure Storage FlashArray in Word/HTML/XML/Text formats using PScribo.
     .NOTES
         Version:        0.4.2
-        Author:         Matt Allford
-        Twitter:        @mattallford
+        Author:         John Hall
+        Twitter:        
         Github:         https://github.com/mattallford
         Credits:        Iain Brighton (@iainbrighton) - PScribo module
                         Tim Carman (@tpcarman) - Wrote original report for Pure Storage
-			Matt Allford (@mattallford) - last updated pure flashary
+			            Matt Allford (@mattallford) - last updated pure flashary
 
     .LINK
         https://github.com/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray
@@ -47,11 +47,13 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
             $script:ArrayAlerts = Get-Pfa2Alert -Array $Array
             $script:ArrayRelayHost = Get-Pfa2SmtpServer -Array $Array
             $script:ArraySenderDomain = Get-Pfa2SmtpServer -Array $Array
-            $script:ArraySNMPManagers = Get-Pfa2SnmpManager -Array $Array
+            $script:ArraySNMPManagers = Get-Pfa2SnmpAgent -Array $Array
             $script:ArraySSLCertificate = Get-Pfa2Certificate -Array $Array
             $script:ArraySyslogServers = Get-Pfa2SyslogServer -Array $Array
             $script:ArrayNTPServers = Get-Pfa2ArrayNtpTest -Array $Array
             $script:ArrayVolumes = Get-Pfa2Volume -Array $Array
+            $script:Arrayfiledirectoryexports = Get-Pfa2DirectoryExport -Array $Array
+            $script:Arrayfiledirectory = Get-Pfa2Directory -Array $Array
             $Script:ArrayHosts = Get-Pfa2Host -Array $Array
             $script:ArrayHostGroups = Get-Pfa2HostGroupHost -Array $Array
             $script:ArrayProtectionGroups = Get-Pfa2ProtectionGroup -Array $Array
@@ -61,7 +63,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
             $script:ArrayProxyServer = Get-Pfa2Support -Array $Array
             $script:ArrayNetworkInterfaces = Get-Pfa2NetworkInterface -Array $Array
             $script:ArrayPorts = Get-Pfa2Port -Array $array
-            $script:ArrayDNS = Get-Pfa2Dns -Array $Array
+            $script:ArrayDNS = Get-Pfa2Dns	 -Array $Array
             $script:ArrayDirectoryService = Get-Pfa2DirectoryService -Array $Array
             $script:ArrayDirectoryServiceGroups = Get-Pfa2DirectoryServiceRole -Array $Array
             $script:ArraySpaceMetrics = Get-Pfa2ArraySpace -Array $Array
@@ -264,6 +266,39 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             $ArrayProtectionGroupScheduleConfiguration | Sort-Object -Property Name | Table -Name 'Protection Group Schedule'
                         }#End Section Heading3 'Protection Group Schedules'
                     }#End if (ArrayProtectionGroupSchedules)
+                    
+                    if ($Arrayfiledirectory) {
+                        Section -Style Heading3 'Pure Storage //file Directory Configuration' {
+                            Paragraph "The following section provides information on the configuration of NFS/SMB file objects on $($ArrayAttributes.Name)."
+                            BlankLine
+                            $ArrayfiledirectoryConfiguration = foreach ($Arrayfiledir in $Arrayfiledirectory) {
+                                [PSCustomObject] @{
+                                    'Name' = $Arrayfiledir.name
+                                    'Directory Name' = $Arrayfiledir.DirectoryName
+                                    'Path ' = $Arrayfiledir.path
+                                    'Provisioned Space' = "$([math]::Round(($Arrayfiledir.space.TotalPhysical) / 1GB, 2)) GB"
+                                    #'Resource Type' = $Arrayfiledir.limitedby.ResourceType
+                                }
+                            }
+                            $ArrayfiledirectoryConfiguration | Sort-Object -Property Name | Table -Name 'Protection Group Schedule'
+                        }#End Section Heading3 'Pure Storage //file Configuration'
+                    }#End if Arrayfiledirectory)
+
+                    if ($Arrayfiledirectoryexports) {
+                        Section -Style Heading3 'Pure Storage //file Directory Exports Configuration' {
+                            Paragraph "The following section provides information on the configuration of NFS/SMB file Directory exports on $($ArrayAttributes.Name)."
+                            BlankLine
+                            $ArrayfiledirectoryexportsConfiguration = foreach ($Arrayfiledirectoryexport in $Arrayfiledirectoryexports) {
+                                [PSCustomObject] @{
+                                    'Name' = $Arrayfiledirectoryexport.exportname
+                                    'Path' = $Arrayfiledirectoryexport.path
+                                    'Resource Type' = $Arrayfiledirectoryexport.policy.resourcetype
+                                    'Enabled' = $Arrayfiledirectoryexport.enabled
+                                }
+                            }
+                            $ArrayfiledirectoryexportsConfiguration | Sort-Object -Property Name | Table -Name 'Protection Group Schedule'
+                        }#End Section Heading3 'Pure Storage //file Configuration'
+                    }#End if Arrayfiledirectory)
                 }#End Section Heading2 Storage Configuration
 
                 Section -Style Heading2 'System Configuration' {
@@ -286,14 +321,15 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                         Blankline
                         $ArraySNMPConfiguration = [PSCustomObject] @{
                             'Name' = $ArraySNMPManagers.name
-                            'Community' = $ArraySNMPManagers.community
-                            'Privacy Protocol' = $ArraySNMPManagers.privacy_protocol
-                            'Authentication Protocol' = $ArraySNMPManagers.auth_protocol
+                            'Community V2' = $ArraySNMPManagers.v2c.community
+                            'Community V3' = $ArraySNMPManagers.v3.community
+                            'Privacy Protocol' = $ArraySNMPManagers.v3.privacy_protocol
+                            'Authentication Protocol' = $ArraySNMPManagers.v3.auth_protocol
                             'Host' = $ArraySNMPManagers.host
                             'Version' = $ArraySNMPManagers.version
                             'User' = $ArraySNMPManagers.user
-                            'Privacy Passphrase' = $ArraySNMPManagers.privacy_passphrase
-                            'Authentication Passphrase' = $ArraySNMPManagers.auth_passphrase
+                            'Privacy Passphrase' = $ArraySNMPManagers.v3.privacy_passphrase
+                            'Authentication Passphrase' = $ArraySNMPManagers.v3.auth_passphrase
                         }
                         $ArraySNMPConfiguration | Table -Name 'SNMP Configuration' -List -ColumnWidths 50, 50 
                     }#End Section Heading3 SNMP Configuration
@@ -370,7 +406,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                 'Interface Type' = $ArrayNetworkInterface.eth.subtype
                                 'Services' = ($ArrayNetworkInterface.services -join ", ")
                                 'Slaves' = ($ArrayNetworkInterface.slaves -join ", ")
-                                'Speed GB' = "$([math]::ceiling(($ArrayNetworkInterface.speed) / 1gb)) GB"
+                                'Speed GB' = "$([math]::round($ArrayNetworkInterface.speed / 1000000000 , 2)) GB"
                             }
                         }
                         $ArrayNetworkConfiguration | Sort-Object -Property Name | Table -Name 'Subnets and Interfaces'
