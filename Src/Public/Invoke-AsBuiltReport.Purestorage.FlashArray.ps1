@@ -7,11 +7,11 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     .NOTES
         Version:        0.4.2
         Author:         John Hall
-        Twitter:        @mattallford
+        Twitter:        
         Github:         https://github.com/mattallford
         Credits:        Iain Brighton (@iainbrighton) - PScribo module
                         Tim Carman (@tpcarman) - Wrote original report for Pure Storage
-			            Matt Allford (@mattallford) - last updated pure flashary
+			Matt Allford (@mattallford) - last updated pure flashary
 
     .LINK
         https://github.com/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray
