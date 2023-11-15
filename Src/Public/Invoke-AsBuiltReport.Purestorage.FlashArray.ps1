@@ -7,7 +7,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     .NOTES
         Version:        0.4.2
         Author:         John Hall
-        Twitter:        
+        Twitter:        @mattallford
         Github:         https://github.com/mattallford
         Credits:        Iain Brighton (@iainbrighton) - PScribo module
                         Tim Carman (@tpcarman) - Wrote original report for Pure Storage
@@ -55,7 +55,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
             $script:Arrayfiledirectoryexports = Get-Pfa2DirectoryExport -Array $Array
             $script:Arrayfiledirectory = Get-Pfa2Directory -Array $Array
             $Script:ArrayHosts = Get-Pfa2Host -Array $Array
-            $script:ArrayHostGroups = Get-Pfa2HostGroupHost -Array $Array
+            $script:ArrayHostGroups = Get-Pfa2Host -Array $Array
             $script:ArrayProtectionGroups = Get-Pfa2ProtectionGroup -Array $Array
             $script:ArrayProtectionGroupSchedules = Get-Pfa2ProtectionGroup -Array $Array
             $script:ArrayProtectionGroupSnapshots = Get-Pfa2ProtectionGroupSnapshot -Array $Array -Name *
@@ -84,7 +84,6 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                         'Number of Protection Group Snapshots' = $ArrayProtectionGroupSnapshots.count
                         'Number of Hosts' = $ArrayHosts.count
                         'Number of Host Groups' = $ArrayHostGroups.count
-                        #'Pod #' = 
                         'Number of Connected Arrays' = $ConnectedArrays.count
                     }
                     $ArraySummary | Table -Name 'Array Summary' -List
@@ -200,9 +199,8 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             BlankLine
                             $ArrayHostGroupConfiguration = foreach ($ArrayHostGroup in $ArrayHostGroups) {
                                 [PSCustomObject] @{
-                                    'Host Group Name' = $ArrayHostGroup.Group.name
-                                    #need to work this shit out with pure need to match $ArrayHostGroup.Member.name to $ArrayHostGroup.Group.name
-                                    'Hosts' = ($ArrayHostGroup.Member.name -join ", ")
+                                    'Host Group' = $ArrayHostGroups.HostGroup.name
+                                    'Hosts' = ($ArrayHostGroups.name -join ", ")
                                 }
                             }
                             $ArrayHostGroupConfiguration | Sort-Object -Property 'Host Group Name' | Table -Name "Host Groups" -ColumnWidths 50, 50
@@ -214,7 +212,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             Paragraph "The following section provides information on the volumes on $($ArrayAttributes.Name)."
                             Blankline
                             $ArrayVolumeConfiguration = foreach ($ArrayVolume in $ArrayVolumes) {
-                                $ArrayVolumeHostGroupConnection = Get-Pfa2Connection -Array $array #-Name $ArrayVolume.name
+                                $ArrayVolumeHostGroupConnection = Get-Pfa2Connection -Array $array -VolumeName $ArrayVolume.name
                                 [PSCustomObject] @{
                                     'Volume Name' = $ArrayVolume.name
                                     'Volume Size' = "$(($ArrayVolume.space.TotalProvisioned / 1GB)) GB"
@@ -232,7 +230,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             Paragraph "The following section provides information on the protection groups on $($ArrayAttributes.Name)."
                             BlankLine
                             $ArrayProtectionGroupConfiguration = foreach ($ArrayProtectionGroup in $ArrayProtectionGroups) {
-                                $ArrayProtectionGroupvolume = Get-Pfa2ProtectionGroupVolume -Array $array
+                                $ArrayProtectionGroupvolume = Get-Pfa2ProtectionGroupVolume -Array $array -groupname $ArrayProtectionGroup.name
                                 [PSCustomObject] @{
                                     'Name' = $ArrayProtectionGroup.Name
                                     'Host Group(s)' = $ArrayProtectionGroup.hgroups
