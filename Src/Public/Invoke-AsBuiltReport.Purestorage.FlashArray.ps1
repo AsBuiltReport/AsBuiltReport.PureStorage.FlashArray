@@ -199,8 +199,8 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             BlankLine
                             $ArrayHostGroupConfiguration = foreach ($ArrayHostGroup in $ArrayHostGroups) {
                                 [PSCustomObject] @{
-                                    'Host Group' = $ArrayHostGroups.HostGroup.name
-                                    'Hosts' = ($ArrayHostGroups.name -join ", ")
+                                    'Host Group' = $ArrayHostGroup.HostGroup.name
+                                    'Hosts' = ($ArrayHostGroup.name -join ", ")
                                 }
                             }
                             $ArrayHostGroupConfiguration | Sort-Object -Property 'Host Group Name' | Table -Name "Host Groups" -ColumnWidths 50, 50
