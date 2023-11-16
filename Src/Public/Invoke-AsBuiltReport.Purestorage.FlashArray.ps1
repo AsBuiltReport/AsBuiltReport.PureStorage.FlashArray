@@ -404,7 +404,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                                 'Hardware Address' = $ArrayNetworkInterface.eth.macaddress
                                 'Interface Type' = $ArrayNetworkInterface.eth.subtype
                                 'Services' = ($ArrayNetworkInterface.services -join ", ")
-                                'Slaves' = ($ArrayNetworkInterface.slaves -join ", ")
+                                'Sub Interfaces' = ($ArrayNetworkInterface.eth.subinterfaces.name -join ", ")
                                 'Speed GB' = "$([math]::round($ArrayNetworkInterface.speed / 1000000000 , 2)) GB"
                             }
                         }
