@@ -87,4 +87,4 @@ PS C:\>New-AsBuiltReport -Report PureStorage.FlashArray -Target 192.168.1.100 -C
 
 - Incorrect Speed shown Network Configuration
 
-  Due to An issue with the Purity code the interface Speed that is shown in the UI and via API calls will default to the Maximum speed avalible on that interface not the Actual interface speed. 
+  Due to An issue with the Purity code the interface Speed that is shown in the UI and via API calls will default to the Maximum speed avalible on that interface not the current interface/SFP speed. 
