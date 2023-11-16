@@ -83,7 +83,7 @@ PS C:\>New-AsBuiltReport -Report PureStorage.FlashArray -Target 192.168.1.100 -C
 
 - Missing Infomation in the Storage summary for Used space and Volumes.
 
-This Issue has been noticed in Purity Version 6.4.10 but could effect other versions in the 6.4.x branch this issue has been raised to the Pure Storage product team to rectify missing or non fucntioning API's.
+  This Issue has been noticed in Purity Version 6.4.10 but could effect other versions in the 6.4.x branch this issue has been raised to the Pure Storage product team to rectify missing or non fucntioning API's.
 
 - Incorrect Speed shown Network Configuration
 
