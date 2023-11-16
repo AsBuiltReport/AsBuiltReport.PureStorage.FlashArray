@@ -7,11 +7,11 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
     .NOTES
         Version:        0.4.2
         Author:         John Hall
-        Twitter:        
+        Twitter:        @mattallford
         Github:         https://github.com/mattallford
         Credits:        Iain Brighton (@iainbrighton) - PScribo module
                         Tim Carman (@tpcarman) - Wrote original report for Pure Storage
-			Matt Allford (@mattallford) - last updated pure flashary
+			            Matt Allford (@mattallford) - last updated pure flashary
 
     .LINK
         https://github.com/AsBuiltReport/AsBuiltReport.PureStorage.FlashArray
@@ -63,7 +63,7 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
             $script:ArrayProxyServer = Get-Pfa2Support -Array $Array
             $script:ArrayNetworkInterfaces = Get-Pfa2NetworkInterface -Array $Array
             $script:ArrayPorts = Get-Pfa2Port -Array $array
-            $script:ArrayDNS = Get-Pfa2Dns	 -Array $Array
+            $script:ArrayDNS = Get-Pfa2Dns -Array $Array
             $script:ArrayDirectoryService = Get-Pfa2DirectoryService -Array $Array
             $script:ArrayDirectoryServiceGroups = Get-Pfa2DirectoryServiceRole -Array $Array
             $script:ArraySpaceMetrics = Get-Pfa2ArraySpace -Array $Array
@@ -130,10 +130,11 @@ function Invoke-AsBuiltReport.PureStorage.FlashArray {
                             'Name' = $ArrayDisk.name
                             'Capacity GB' = [math]::Round(($ArrayDisk.capacity) / 1GB, 0)
                             'Type' = $ArrayDisk.Type
+                            'Protocol' = $ArrayDisk.Protocol
                             'Status' = $ArrayDisk.status
                         }
                     }
-                    $ArrayDiskSummary | Sort-Object -Property Name | Table -Name 'Disk Summary' -ColumnWidths 25, 25, 25, 25
+                    $ArrayDiskSummary | Sort-Object -Property Name | Table -Name 'Disk Summary' -ColumnWidths 20, 20, 20, 20, 20
                 }#End section Heading2 'Disk Summary'
 
                 Section -Style Heading2 'Storage Configuration' {
