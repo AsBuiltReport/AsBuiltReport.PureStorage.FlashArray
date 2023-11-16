@@ -38,14 +38,14 @@ The following PowerShell modules are required for generating a Pure Storage Flas
 
 Each of these modules can be easily downloaded and installed via the PowerShell Gallery 
 
-- [Pure Storage Powershell SDK Module](https://www.powershellgallery.com/packages/PureStoragePowerShellSDK/)
+- [Pure Storage Powershell SDK2 Module](https://www.powershellgallery.com/packages/PureStoragePowerShellSDK2)
 - [AsBuiltReport Module](https://www.powershellgallery.com/packages/AsBuiltReport/)
 
 ### Module Installation
 
 Open a Windows PowerShell terminal window and install each of the required modules as follows;
 ```powershell
-Install-Module PureStoragePowerShellSDK
+Install-Module PureStoragePowerShellSDK2
 Install-Module AsBuiltReport
 ```
 
