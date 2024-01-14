@@ -1,5 +1,12 @@
 # Pure Storage FlashArray As Built Report Changelog
 
+## [0.4.2] - 2023-11-16
+### Changed
+- Refactored entire Codebase to work with Pure Storage Powershell SDK2 and API V2 calls
+- added in functionality for //file directory infomation and exports
+- added in interface speed to network interfaces
+- fixed up SSL certificate information
+
 ## [0.4.1] - 2019-04-03
 ### Changed
 - Modified the logic used when connecting to a Pure Flasharray target

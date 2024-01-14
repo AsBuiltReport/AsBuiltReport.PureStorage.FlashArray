@@ -38,14 +38,14 @@ The following PowerShell modules are required for generating a Pure Storage Flas
 
 Each of these modules can be easily downloaded and installed via the PowerShell Gallery 
 
-- [Pure Storage Powershell SDK Module](https://www.powershellgallery.com/packages/PureStoragePowerShellSDK/)
+- [Pure Storage Powershell SDK2 Module](https://www.powershellgallery.com/packages/PureStoragePowerShellSDK2)
 - [AsBuiltReport Module](https://www.powershellgallery.com/packages/AsBuiltReport/)
 
 ### Module Installation
 
 Open a Windows PowerShell terminal window and install each of the required modules as follows;
 ```powershell
-Install-Module PureStoragePowerShellSDK
+Install-Module PureStoragePowerShellSDK2
 Install-Module AsBuiltReport
 ```
 
@@ -80,3 +80,11 @@ PS C:\>New-AsBuiltReport -Report PureStorage.FlashArray -Target 192.168.1.100 -C
 ```
 
 ## Known Issues
+
+- Missing Infomation in the Storage summary for Used space and Volumes.
+
+  This Issue has been noticed in Purity Version 6.4.10 but could effect other versions in the 6.4.x branch this issue has been raised to the Pure Storage product team to rectify missing or non fucntioning API's.
+
+- Incorrect Speed shown Network Configuration
+
+  Due to An issue with the Purity code the interface Speed that is shown in the UI and via API calls will default to the Maximum speed avalible on that interface not the current interface/SFP speed. 
